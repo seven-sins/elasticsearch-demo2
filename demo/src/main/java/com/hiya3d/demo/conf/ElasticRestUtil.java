@@ -1,6 +1,12 @@
 package com.hiya3d.demo.conf;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -16,8 +22,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ElasticRestUtil {
+	private Map<Integer, List<String>> categoryMap = new HashMap<>();
 	@Autowired
 	RestHighLevelClient restHighLevelClient;
+	
+	@PostConstruct
+	public void init() {
+		// 相关性重塑
+		categoryMap.put(1, new ArrayList<>());
+		categoryMap.put(2, new ArrayList<>());
+		//
+		categoryMap.get(1).add("吃饭");
+		categoryMap.get(1).add("喝茶");
+		//
+		categoryMap.get(2).add("住宿");
+		categoryMap.get(2).add("酒店");
+		/**
+		 * 查询的时候使用keyword获取category并作为查询条件
+		 */
+	}
 
 	public Object query(String text) throws IOException{
 		//模糊查询
@@ -50,6 +73,9 @@ public class ElasticRestUtil {
 
         return search;
 	}
+	
+	
+	
 	
 //	public Result<List<JSONObject>> complexQuery(
 //			String index, 
